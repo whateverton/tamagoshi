@@ -13,13 +13,14 @@ void atualizaTela(){
 	if (pg == 1) pg = 2; else pg = 1;
 	setactivepage(pg);																//Pagina ativa
 	cleardevice();																	//Limpa tela
+	
 }
 
-void printNum(int x, int y, int num){
+void printNum(int x, int y, int come){
 	char aux[20];
 	
 	std::ostringstream convert;
-	convert << (int)num;
+	convert << (int)come;
 	strcpy(aux, convert.str().c_str());
 
 	outtextxy(x, y, aux);

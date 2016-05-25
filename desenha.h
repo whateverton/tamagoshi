@@ -3,6 +3,6 @@
 
 void desenhaTela();
 void atualizaTela();
-void printNum(int x, int y, int num);
+void printNum(int , int , int);
 
 #endif
