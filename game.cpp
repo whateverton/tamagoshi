@@ -23,12 +23,11 @@ int main (){
 	
 	char tcl;							 	//Provisorio enquanto nao ha um final de jogo definido
 	
+	initGame();
 	while (tcl != ESC){						//Loop do jogo
 		if (kbhit()) tcl = getch();			//Captura teclado
 		desenhaTela();
-		botoes(tcl);						//Captura botõe provisóriamente
-		if (!decrementoCome(0) || !decrementoBrinca(0) || !decrementoCaga(0) || !decrementoBanho(0))	break;	//Um dos possiveis finais de jogo
-		atualizaLogica(FPS);
+		if(!atualizaLogica(FPS)) break;
 		delay(int(FPS  * 1000.0));
 		atualizaTela();
 	}

@@ -6,6 +6,8 @@
 #include <string>
 #include <sstream>
 
+#include "desenha.h"
+#include "logica.h"
 
 void atualizaTela(){
 	static int pg = 1;
@@ -23,6 +25,17 @@ void printNum(int x, int y, int num){
 	strcpy(aux, convert.str().c_str());					//Copiando uma string para um char para passar como parâmetro no outtextxy
 
 	outtextxy(x, y, aux);								//Imprimir valor na tela
+}
+
+void printImg(imagem_type *imagem){
+	int mode = COPY_PUT;
+	
+	if(imagem->mask){
+	 	putimage(imagem->pos.x, imagem->pos.y, imagem->mask, AND_PUT);
+	 	mode = OR_PUT;
+	 }
+	
+	putimage(imagem->pos.x, imagem->pos.y, imagem->img, mode);	
 }
 
 void desenhaTela(){
@@ -47,12 +60,15 @@ void desenhaTela(){
 	}
 }
 
-void importaImagem(){
- /*	***readimagefile("desenho.jpg", 0, 0, 199, 149); <~ recebe a imagem + altura e largura do retangulo, e tamanho da imagem
- 	***Tamanho = imagesize(0, 0, 199, 149); <~ determina o tamanho da memoria que sera utilzada para armazenar a imagem, 
-	**a variave int Tamanho, recebe esse isso
- 	>onde fig é um ponteiro do tipo void (void *fig) e recebe o tamanho da imagem.
- 	>fig* é do tipo void porque ele deve ser alocado em uma regiao da memoria (malloc) para ser utilizado nas funcoes abaixo 
- 	***getimage(0, 0, 199, 149, fig); <~ copia a imagem da tela para a memoria 
- 	***putimage(  0, 100, fig, 0); <~ coloca a imagem salva na memoria de volta na tela */  	
+void importaImagem(imagem_type *imagem, const char* nome){
+	int tamanho = 0;
+	readimagefile(nome, 0, 0,imagem->largura, imagem->altura);
+	tamanho = imagesize(0, 0,imagem->largura, imagem->altura);
+	imagem->img =  malloc(tamanho);
+	getimage(0, 0, imagem->largura,imagem->altura,imagem->img);
+	
+	imagem->mask  = NULL;
+
 }
+
+

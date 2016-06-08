@@ -20,8 +20,29 @@
 #define PONTUACAO_POSX	205
 #define PONTUACAO_POSY	55
 
+#define ALTURA_BOTAO 	50
+#define LARGURA_BOTAO	110
+
+typedef enum{
+	 COME
+	,BRINCA
+	,CAGA
+	,BANHO
+	,MAX_NECESSIDADES
+}necessidades_enum;
+
+typedef struct{
+	imagem_type botao_idle;
+	imagem_type botao_pressionado;
+	imagem_type *botao_atual;
+	char *texto;
+	float valor;
+	float decremento;	
+	float incremento;
+}necessidades_type;
+
+
 //necessidades
-float come = 101.0;
 float brinca = 101.0;
 float caga = 101.0;
 float banho = 101.0;
@@ -30,35 +51,54 @@ float pontuacao = 0.0;
 int mouse_dx;
 int mouse_dy;
 
-typedef struct{
-	int posX;
-	int posY;
-	int altura;
-	int largura;
-	void * img;
-}TObj_pos;
-
-TObj_pos imagem[50];
+necessidades_type necessidades[MAX_NECESSIDADES];
 
 void initGame(){
-	imagem[0].posX = 0;
-	imagem[1].posY = 550;
-	imagem[2].altura = 50;
-	imagem[3].largura = 110;
 	
+	for(int i =  COME; i < MAX_NECESSIDADES; ++i){
+		necessidades[i].valor = 101.0;
+		necessidades[i].decremento = 0.10;
+		necessidades[i].incremento = 5.0;
+		
+		necessidades[i].botao_idle.pos.x = LARGURA_BOTAO * i; // botão da esquerda para direita
+		necessidades[i].botao_idle.pos.y = 550;
+		necessidades[i].botao_idle.altura = ALTURA_BOTAO; // px
+		necessidades[i].botao_idle.largura = LARGURA_BOTAO; // px
+		
+		necessidades[i].botao_pressionado.pos.x = LARGURA_BOTAO * i; // botão da esquerda para direita
+		necessidades[i].botao_pressionado.pos.y = 550;
+		necessidades[i].botao_pressionado.altura = ALTURA_BOTAO; // px
+		necessidades[i].botao_pressionado.largura = LARGURA_BOTAO; // px
+		
+		importaImagem(&necessidades[i].botao_idle,"botao_idle.png");
+		importaImagem(&necessidades[i].botao_pressionado,"botao_pressionado.png");
+		
+		necessidades[i].botao_atual = &necessidades[i].botao_idle;
+	}
+		
+}
+
+void incNecessidade (float dT, necessidades_type &n){
+	n.valor += n.incremento;
+	
+	if(n.valor > 101.0){
+		n.valor = 101.0;
+	}
+}
+
+bool decNecessidade (float dT, necessidades_type &n){
+	n.valor -= n.decremento;
+	
+	if(n.valor <= 0.0){
+		return false;
+	}
+	
+	return true;
 }
 
 bool incrementoPontuacao(float dT){
 	pontuacao += (10.0 * dT);
 	if (pontuacao >= 100000.0)	
-		return false;
-	return true;
-	
-}
-
-bool decrementoCome(float dT){
-	come -= (1.0 * dT);
-	if (come <= 0.0)	
 		return false;
 	return true;
 	
@@ -89,41 +129,64 @@ bool decrementoBanho(float dT){
 bool atualizaLogica(const float dT){
 	
 	incrementoPontuacao(dT);
-	decrementoCome(dT);
-	decrementoBrinca(dT);
-	decrementoCaga(dT);
-	decrementoBanho(dT);
+	
+	for(int i = COME; i < MAX_NECESSIDADES; ++i){
+		if(!decNecessidade(dT,necessidades[i]))
+			return false;
+	}
+	
+	
+	int index;
+	if((index = botoes()) > -1){
+		incNecessidade(dT,necessidades[index]);
+	}
 	
 	printNum(PONTUACAO_POSX,	PONTUACAO_POSY,	pontuacao);
-	printNum(COME_POSX,			STATS_POSY,		come);
-	printNum(BRINCA_POSX,		STATS_POSY,		brinca);
-	printNum(CAGA_POSX,			STATS_POSY,		caga);
-	printNum(BANHO_POSX,		STATS_POSY,		banho);
+	printNum(COME_POSX,			STATS_POSY,		necessidades[COME].valor);
+	printNum(BRINCA_POSX,		STATS_POSY,		necessidades[BRINCA].valor);
+	printNum(CAGA_POSX,			STATS_POSY,		necessidades[CAGA].valor);
+	printNum(BANHO_POSX,		STATS_POSY,		necessidades[BANHO].valor);
 	
-	encerraJogo(dT);
+	for(int i = COME; i < MAX_NECESSIDADES; ++i){
+		printImg(necessidades[i].botao_atual);
+	}
+	
+	// return encerraJogo(dT);
+	return true;
 }
 
 bool encerraJogo(float dT){
 	
-	dT += 1000;
-	if (dT <= 180000)
+	dT += 1000.0;
+	if (dT <= 180000.0)
 		return false;
 	return true;
 }
 
-void botoes(char tecla){
+int botoes(void){
+	
+	
 	if(ismouseclick(WM_LBUTTONDOWN)){
 		getmouseclick(WM_LBUTTONDOWN, mouse_dx, mouse_dy);
 		
-		if (come < CONTROLE_STATS){
-			if ((CONTROLE_STATS - come) >= 5){
-				come += 5; 
-				pontuacao += 100;
-			}else{
-				come += (CONTROLE_STATS - come);
-				pontuacao += (come/3);
+		for(int i = COME; i < MAX_NECESSIDADES; ++i){
+						
+			if((necessidades[i].botao_atual->pos.x > mouse_dx) || ((necessidades[i].botao_atual->pos.x + necessidades[i].botao_atual->largura) < mouse_dx)) continue;
+			if((necessidades[i].botao_atual->pos.y > mouse_dy) || ((necessidades[i].botao_atual->pos.y + necessidades[i].botao_atual->altura) < mouse_dy)) continue;
+			
+			necessidades[i].botao_atual = &necessidades[i].botao_pressionado;
+			
+			return i;
+		}
+	}
+	if(ismouseclick(WM_LBUTTONUP)){		
+		clearmouseclick(WM_LBUTTONUP);
+		for(int i = COME; i < MAX_NECESSIDADES; ++i){						
+			if(necessidades[i].botao_atual == &necessidades[i].botao_pressionado){
+				necessidades[i].botao_atual = &necessidades[i].botao_idle;
 			}
 		}
 	}
+	return -1;
 }
 
