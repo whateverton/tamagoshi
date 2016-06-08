@@ -38,7 +38,6 @@ int main (){
 	while (tcl != ESC){
 		if (kbhit()) tcl = getch();
 		desenhaTela();
-		botoes(tcl);
 		if (!decremento(0))	break;
 		atualizaLogica(FPS);
 		delay(int(FPS  * 1000.0));

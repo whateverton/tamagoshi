@@ -9,7 +9,7 @@ bool incrementoPontuacao(float dT);
 
 
 void initGame();
-void botoes(char tecla);
+int botoes(void);
 bool encerraJogo(float dT);
 bool atualizaLogica(const float dT);
 
