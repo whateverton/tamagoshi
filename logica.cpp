@@ -70,8 +70,13 @@ void initGame(){
 		necessidades[i].botao_pressionado.altura = ALTURA_BOTAO; // px
 		necessidades[i].botao_pressionado.largura = LARGURA_BOTAO; // px
 		
+<<<<<<< HEAD
 		importaImagem(&necessidades[i].botao_idle,"botao_idle.png");
 		importaImagem(&necessidades[i].botao_pressionado,"botao_pressionado.png");
+=======
+		importaImagem(&necessidades[i].botao_idle,"botao_idle.bmp");
+		importaImagem(&necessidades[i].botao_pressionado,"botao_pressionado.bmp");
+>>>>>>> 14789df313b77a8df980a375690d0973ff0aeb15
 		
 		necessidades[i].botao_atual = &necessidades[i].botao_idle;
 	}

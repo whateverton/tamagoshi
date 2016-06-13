@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <string>
 #include <sstream>
+#include "desenha.h"
 
 #include "desenha.h"
 #include "logica.h"
