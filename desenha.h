@@ -16,6 +16,7 @@ typedef struct{
 
 void desenhaTela();
 void importaImagem(imagem_type *imagem,const char* nome);
+void importaMascara(imagem_type *imagem, const char* nome);
 void atualizaTela();
 void printImg(imagem_type *imagem);
 void printNum(int , int , int);

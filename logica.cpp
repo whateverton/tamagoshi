@@ -41,6 +41,66 @@ typedef struct{
 	float incremento;
 }necessidades_type;
 
+typedef struct{
+	imagem_type array[3][2];
+	int evol = 0;
+	int state = 0;
+	const float counter_reload = 0.5;
+	float counter;
+	
+	void update (float dT){
+		if((counter -= dT) > 0) return;
+		
+		counter = counter_reload;
+		
+		if(state == 0){
+			state = 1;
+		}else{
+			state = 0;
+		}
+	}
+	
+	imagem_type *getSprite () {
+		return &array[evol][state];
+	}
+	
+	
+}sprites;
+
+char *button_idle_img_path[] = {
+	 "./images/botao_idle.jpg"
+	,"./images/botao_idle.jpg"
+	,"./images/Button_Caga.jpg"
+	,"./images/Button_Banho.jpg"
+};
+char *button_pressed_img_path[] = {
+	 "./images/botao_pressionado.jpg"
+	,"./images/botao_pressionado.jpg"
+	,"./images/Button_Caga_Pressed.jpg"
+	,"./images/Button_Banho_Pressed.jpg"
+};
+char *button_mask = "./images/Mascaras/Mascara_Zeta_Button.png";
+
+char *sprites_img[] = {
+	 "./images/Monster_evo1_1.jpg"
+	,"./images/Monster_evo1_2.jpg"
+	,"./images/Monster_evo2_1.jpg"
+	,"./images/Monster_evo2_2.jpg"
+	,"./images/Monster_evo3_1.jpg"
+	,"./images/Monster_evo3_2.jpg"
+};
+
+char *sprites_mask[] = {
+	"./images/Mascaras/Mascara_evo1_1.jpg"
+	,"./images/Mascaras/Mascara_evo1_2.jpg"
+	,"./images/Mascaras/Mascara_evo2_1.jpg"
+	,"./images/Mascaras/Mascara_evo2_2.jpg"
+	,"./images/Mascaras/Mascara_evo3_1.jpg"
+	,"./images/Mascaras/Mascara_evo3_2.jpg"
+};
+
+char *background_img = "./images/bckgd_game.bmp";
+
 
 //necessidades
 float brinca = 101.0;
@@ -52,6 +112,8 @@ int mouse_dx;
 int mouse_dy;
 
 necessidades_type necessidades[MAX_NECESSIDADES];
+sprites monster;
+imagem_type background;
 
 void initGame(){
 	
@@ -70,17 +132,48 @@ void initGame(){
 		necessidades[i].botao_pressionado.altura = ALTURA_BOTAO; // px
 		necessidades[i].botao_pressionado.largura = LARGURA_BOTAO; // px
 		
-<<<<<<< HEAD
-		importaImagem(&necessidades[i].botao_idle,"botao_idle.png");
-		importaImagem(&necessidades[i].botao_pressionado,"botao_pressionado.png");
-=======
-		importaImagem(&necessidades[i].botao_idle,"botao_idle.bmp");
-		importaImagem(&necessidades[i].botao_pressionado,"botao_pressionado.bmp");
->>>>>>> 14789df313b77a8df980a375690d0973ff0aeb15
+		//importaImagem(&necessidades[i].botao_idle,button_idle_img_path[i]);
+		importaImagem(&necessidades[i].botao_idle,"./images/botao_idle.jpg");
+		importaMascara(&necessidades[i].botao_idle,button_mask);
+		//importaImagem(&necessidades[i].botao_pressionado,button_pressed_img_path[i]);
+		importaImagem(&necessidades[i].botao_pressionado,"./images/botao_pressionado.jpg");
+		importaMascara(&necessidades[i].botao_pressionado,button_mask);
 		
 		necessidades[i].botao_atual = &necessidades[i].botao_idle;
 	}
-		
+	
+	monster.counter = monster.counter_reload;
+	monster.array[0][0].altura = 600;
+	monster.array[0][0].largura = 420;
+	importaImagem(&monster.array[0][0],sprites_img[0]);
+	importaMascara(&monster.array[0][0],sprites_mask[0]);
+	monster.array[0][1].altura = 600;
+	monster.array[0][1].largura = 420;
+	importaImagem(&monster.array[0][1],sprites_img[1]);
+	importaMascara(&monster.array[0][1],sprites_mask[1]);
+	
+	monster.array[1][0].altura = 600;
+	monster.array[1][0].largura = 420;
+	importaImagem(&monster.array[1][0],sprites_img[2]);
+	importaMascara(&monster.array[1][0],sprites_mask[2]);
+	monster.array[1][1].altura = 600;
+	monster.array[1][1].largura = 420;
+	importaImagem(&monster.array[1][1],sprites_img[3]);
+	importaMascara(&monster.array[1][1],sprites_mask[3]);
+	
+	monster.array[2][0].altura = 600;
+	monster.array[2][0].largura = 420;
+	importaImagem(&monster.array[2][0],sprites_img[4]);
+	importaMascara(&monster.array[2][0],sprites_mask[4]);
+	monster.array[2][1].altura = 600;
+	monster.array[2][1].largura = 420;
+	importaImagem(&monster.array[2][1],sprites_img[5]);
+	importaMascara(&monster.array[2][1],sprites_mask[5]);
+	
+	background.altura = 600;
+	background.largura = 420;
+	importaImagem(&background,background_img);
+	
 }
 
 void incNecessidade (float dT, necessidades_type &n){
@@ -102,7 +195,7 @@ bool decNecessidade (float dT, necessidades_type &n){
 }
 
 bool incrementoPontuacao(float dT){
-	pontuacao += (10.0 * dT);
+	pontuacao += (500.0 * dT);
 	if (pontuacao >= 100000.0)	
 		return false;
 	return true;
@@ -133,7 +226,16 @@ bool decrementoBanho(float dT){
 
 bool atualizaLogica(const float dT){
 	
+	printImg(&background);
 	incrementoPontuacao(dT);
+	
+	if(pontuacao >= 1000.0){
+		if(pontuacao >= 5000.0) monster.evol = 2;
+		else monster.evol = 1;
+	}
+	
+	monster.update(dT);
+	printImg(monster.getSprite());
 	
 	for(int i = COME; i < MAX_NECESSIDADES; ++i){
 		if(!decNecessidade(dT,necessidades[i]))

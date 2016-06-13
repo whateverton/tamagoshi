@@ -72,4 +72,11 @@ void importaImagem(imagem_type *imagem, const char* nome){
 
 }
 
+void importaMascara(imagem_type *imagem, const char* nome){
+	int tamanho = 0;
+	readimagefile(nome, 0, 0,imagem->largura, imagem->altura);
+	tamanho = imagesize(0, 0,imagem->largura, imagem->altura);
+	imagem->mask=  malloc(tamanho);
+	getimage(0, 0, imagem->largura,imagem->altura,imagem->mask);
+}
 
