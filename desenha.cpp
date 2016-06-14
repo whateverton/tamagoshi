@@ -28,6 +28,10 @@ void printNum(int x, int y, int num){
 	outtextxy(x, y, aux);								//Imprimir valor na tela
 }
 
+void printTxt(txt_type *txt){
+	outtextxy(txt->pos.x, txt->pos.y, (char*)txt->txt);								//Imprimir valor na tela
+}
+
 void printImg(imagem_type *imagem){
 	int mode = COPY_PUT;
 	
