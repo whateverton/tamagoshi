@@ -81,6 +81,13 @@ char *button_pressed_img_path[] = {
 };
 char *button_mask = "./images/Mascaras/Mascara_Zeta_Button.bmp";
 
+char *need_img_path[] = {
+	 "./images/need_food.bmp"
+	,"./images/need_sleep.bmp"
+	,"./images/need_poop.bmp"
+	,"./images/need_bath.bmp"
+};
+
 char *sprites_img[] = {
 	 "./images/Monster_evo1_1.bmp"
 	,"./images/Monster_evo1_2.bmp"
@@ -116,6 +123,8 @@ necessidades_type necessidades[MAX_NECESSIDADES];
 sprites monster;
 imagem_type background;
 
+imagem_type needs_diplay[4];
+
 void initGame(){
 	
 	for(int i =  COME; i < MAX_NECESSIDADES; ++i){
@@ -140,7 +149,18 @@ void initGame(){
 		importaMascara(&necessidades[i].botao_pressionado,button_mask);
 		
 		necessidades[i].botao_atual = &necessidades[i].botao_idle;
+		
+		
+		needs_diplay[i].pos.x = LARGURA_BOTAO * i; // botão da esquerda para direita
+		needs_diplay[i].pos.y = 0;
+		needs_diplay[i].altura = ALTURA_BOTAO; // px
+		needs_diplay[i].largura = LARGURA_BOTAO; // px
+		
+		importaImagem(&needs_diplay[i],need_img_path[i]);
+		importaMascara(&needs_diplay[i],button_mask);
+		
 	}
+	
 	
 	monster.counter = monster.counter_reload;
 	monster.array[0][0].altura = 600;
@@ -246,6 +266,12 @@ bool atualizaLogica(const float dT){
 	int index;
 	if((index = botoes()) > -1){
 		incNecessidade(dT,necessidades[index]);
+		pontuacao += 30;
+	}
+	
+	for(int i = COME; i < MAX_NECESSIDADES; ++i){
+		printImg(&needs_diplay[i]);
+		printImg(necessidades[i].botao_atual);
 	}
 	
 	printNum(PONTUACAO_POSX,	PONTUACAO_POSY,	pontuacao);
@@ -254,19 +280,30 @@ bool atualizaLogica(const float dT){
 	printNum(CAGA_POSX,			STATS_POSY,		necessidades[CAGA].valor);
 	printNum(BANHO_POSX,		STATS_POSY,		necessidades[BANHO].valor);
 	
-	for(int i = COME; i < MAX_NECESSIDADES; ++i){
-		printImg(necessidades[i].botao_atual);
-	}
-	
 	return encerraJogo(dT);
 }
 
 bool encerraJogo(float dT){
 	
 	timeout += dT;
-	if (timeout >= 180.0)
+	if (timeout >= 128.0)
 		return false;
 	return true;
+}
+
+void swapRandomButtons (int index){
+	int swap_index = rand() % 4;
+	
+	if (swap_index == index) return;
+	
+	vetor2d_type tmp = necessidades[swap_index].botao_idle.pos;
+	
+	necessidades[swap_index].botao_idle.pos = necessidades[index].botao_idle.pos;
+	necessidades[swap_index].botao_pressionado.pos = necessidades[index].botao_pressionado.pos;
+	
+	necessidades[index].botao_idle.pos = tmp;
+	necessidades[index].botao_pressionado.pos = tmp;
+	
 }
 
 int botoes(void){
@@ -282,6 +319,8 @@ int botoes(void){
 			
 			necessidades[i].botao_atual = &necessidades[i].botao_pressionado;
 			
+			// troca a posição do botão pressionado com outro de forma randômica
+			swapRandomButtons(i); 
 			return i;
 		}
 	}
