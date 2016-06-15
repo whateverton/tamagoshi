@@ -305,7 +305,7 @@ bool encerraJogo(float dT){
 		data_type packed_to_send;
 		data_type packed_to_receive;
 
-		sprintf(packed_to_send.buff,"%d",pontuacao);
+		sprintf(packed_to_send.buff,"%lu",(unsigned int)pontuacao);
 		
 		packed_to_send.operation =  SCORE_UPDATE;
 		packed_to_send.buff_size = strlen(packed_to_send.buff) + 1;
@@ -354,7 +354,7 @@ bool encerraJogo(float dT){
 		
 	}
 	
-	return true;
+	return false;
 	
 }
 
