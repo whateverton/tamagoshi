@@ -107,6 +107,7 @@ float brinca = 101.0;
 float caga = 101.0;
 float banho = 101.0;
 float pontuacao = 0.0;
+float timeout = 0.0;
 
 int mouse_dx;
 int mouse_dy;
@@ -261,10 +262,9 @@ bool atualizaLogica(const float dT){
 }
 
 bool encerraJogo(float dT){
-	static float tempo = 0.0;
 	
-	tempo += dT;
-	if (tempo >= 180.0)
+	timeout += dT;
+	if (timeout >= 180.0)
 		return false;
 	return true;
 }
