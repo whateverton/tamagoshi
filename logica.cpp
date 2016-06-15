@@ -68,13 +68,13 @@ typedef struct{
 }sprites;
 
 char *button_idle_img_path[] = {
-	 "./images/Button_come.bmp"
+	 "./images/Button_Come.bmp"
 	,"./images/Button_Dorme.bmp"
 	,"./images/Button_Caga.bmp"
 	,"./images/Button_Banho.bmp"
 };
 char *button_pressed_img_path[] = {
-	 "./images/Button_come_Pressed.bmp"
+	 "./images/Button_Come_Pressed.bmp"
 	,"./images/Button_Dorme_Pressed.bmp"
 	,"./images/Button_Caga_Pressed.bmp"
 	,"./images/Button_Banho_Pressed.bmp"
@@ -133,10 +133,9 @@ void initGame(){
 		necessidades[i].botao_pressionado.largura = LARGURA_BOTAO; // px
 		
 		importaImagem(&necessidades[i].botao_idle,button_idle_img_path[i]);
-		//importaImagem(&necessidades[i].botao_idle,"./images/botao_idle.bmp");
 		importaMascara(&necessidades[i].botao_idle,button_mask);
+		
 		importaImagem(&necessidades[i].botao_pressionado,button_pressed_img_path[i]);
-		//importaImagem(&necessidades[i].botao_pressionado,"./images/botao_pressionado.bmp");
 		importaMascara(&necessidades[i].botao_pressionado,button_mask);
 		
 		necessidades[i].botao_atual = &necessidades[i].botao_idle;
@@ -227,8 +226,8 @@ bool decrementoBanho(float dT){
 bool atualizaLogica(const float dT){
 	
 	printImg(&background);
-	incrementoPontuacao(dT);
-	
+	if(!incrementoPontuacao(dT)) return false;
+		
 	if(pontuacao >= 2000.0){
 		if(pontuacao >= 6000.0) monster.evol = 2;
 		else monster.evol = 1;
@@ -258,14 +257,14 @@ bool atualizaLogica(const float dT){
 		printImg(necessidades[i].botao_atual);
 	}
 	
-	// return encerraJogo(dT);
-	return true;
+	return encerraJogo(dT);
 }
 
 bool encerraJogo(float dT){
+	static float tempo = 0.0;
 	
-	dT += 1000.0;
-	if (dT <= 180000.0)
+	tempo += dT;
+	if (tempo >= 180.0)
 		return false;
 	return true;
 }
