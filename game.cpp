@@ -28,6 +28,7 @@ int main (){
 	
 	initGame();
 	updateLanguage(PT_BR);
+	setMultiplayer(false);
 	
 	while(true)
 	{
@@ -36,11 +37,26 @@ int main (){
 			case MAIN_MENU:
 				g_state = mainMenu();
 				break;
+				
+			case CONNECTION:
+				if (kbhit()) tcl = getch();
+				if(tcl == ESC)
+				{
+					g_state = MAIN_MENU;
+					break;
+				}
+				
+				g_state = connectUDP();
+				if(g_state == IN_GAME)
+					setMultiplayer(true);
+				break;
 			case IN_GAME:
 				
 				if (kbhit()) tcl = getch();		//Captura teclado
 				
-				if(!atualizaLogica(FPS) || (tcl == ESC)) g_state = GAME_OVER;
+				//desenhaTela();
+				if(!atualizaLogica(FPS) || (tcl == ESC)) 
+					g_state = GAME_OVER;
 				
 				break;
 			case GAME_OVER:
@@ -51,7 +67,7 @@ int main (){
 				g_state = settingsMenu();
 				break;
 			case CREDITS:
-				if(kbhit()) g_state = MAIN_MENU;
+				g_state = creditsMenu();
 				break;
 			case EXIT:
 				return 0;

@@ -1,6 +1,8 @@
 #include <graphics.h>
 #include <iostream>
+#include <fstream>
 
+#include "rede.h"
 #include "logica.h"
 #include "desenha.h"
 
@@ -22,6 +24,8 @@
 
 #define ALTURA_BOTAO 	50
 #define LARGURA_BOTAO	105
+
+using namespace std;
 
 typedef enum{
 	 COME
@@ -98,7 +102,7 @@ char *sprites_img[] = {
 };
 
 char *sprites_mask[] = {
-	"./images/Mascaras/Mascara_evo1_1.bmp"
+	 "./images/Mascaras/Mascara_evo1_1.bmp"
 	,"./images/Mascaras/Mascara_evo1_2.bmp"
 	,"./images/Mascaras/Mascara_evo2_1.bmp"
 	,"./images/Mascaras/Mascara_evo2_2.bmp"
@@ -123,9 +127,34 @@ necessidades_type necessidades[MAX_NECESSIDADES];
 sprites monster;
 imagem_type background;
 
+bool multiplayer = false;
 imagem_type needs_diplay[4];
 
+void maxPoints();
+
 void initGame(){
+	char data[8000], *pointer;
+	int file_index = 0;
+	
+	ifstream server_file("ip_config.inf");
+	
+	// Le de um arquivo os dados das imagens
+	while(server_file.good())
+	{
+		data[file_index] = server_file.get();
+		file_index++;
+	}
+
+	server_file.close();
+	data[file_index] = '\0';
+	
+	char *ip = strtok(data,":");
+	pointer = strtok(NULL,":");
+	int port = strtoul(pointer,0,10);
+	
+	configServer(ip,port);
+	
+	settextstyle(0,HORIZ_DIR,2);
 	
 	for(int i =  COME; i < MAX_NECESSIDADES; ++i){
 		necessidades[i].valor = 101.0;
@@ -144,7 +173,6 @@ void initGame(){
 		
 		importaImagem(&necessidades[i].botao_idle,button_idle_img_path[i]);
 		importaMascara(&necessidades[i].botao_idle,button_mask);
-		
 		importaImagem(&necessidades[i].botao_pressionado,button_pressed_img_path[i]);
 		importaMascara(&necessidades[i].botao_pressionado,button_mask);
 		
@@ -160,7 +188,6 @@ void initGame(){
 		importaMascara(&needs_diplay[i],button_mask);
 		
 	}
-	
 	
 	monster.counter = monster.counter_reload;
 	monster.array[0][0].altura = 600;
@@ -282,7 +309,10 @@ bool atualizaLogica(const float dT){
 	
 	return encerraJogo(dT);
 }
-
+void maxPoints()
+{
+	
+}
 bool encerraJogo(float dT){
 	
 	timeout += dT;
@@ -335,3 +365,7 @@ int botoes(void){
 	return -1;
 }
 
+void setMultiplayer(bool m)
+{
+	multiplayer = m;
+}

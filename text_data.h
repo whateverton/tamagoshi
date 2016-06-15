@@ -9,8 +9,10 @@ typedef enum{
 	,TOTAL_LANG
 }lang_type;
 
-extern txt_type menu_options[4];
+extern txt_type menu_options[5];
 extern txt_type settings_options[3];
+extern txt_type credits_display[13];
+extern txt_type connect_display;
 
 void updateLanguage(lang_type lang);
 void toggleLanguage();

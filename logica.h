@@ -12,5 +12,6 @@ void initGame();
 int botoes(void);
 bool encerraJogo(float dT);
 bool atualizaLogica(const float dT);
+void setMultiplayer(bool m);
 
 #endif
