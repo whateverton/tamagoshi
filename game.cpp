@@ -3,6 +3,7 @@
 #include "desenha.h"
 #include "logica.h"
 #include "main_menu.h"
+#include "rede.h"
 
 using namespace std;
 
@@ -60,7 +61,6 @@ int main (){
 				
 				break;
 			case GAME_OVER:
-				while(!kbhit());
 				g_state = EXIT;
 				break;
 			case SETTINGS:
@@ -70,11 +70,30 @@ int main (){
 				g_state = creditsMenu();
 				break;
 			case EXIT:
-				return 0;
+				goto exit;
 		}
 		
 		delay(int(FPS  * 1000.0));
 		atualizaTela();
 	}
+	
+exit:
+	closeCon();
+	
+	cleardevice();
+	txt_type game_over;
+	char *over =  "GAME OVER";
+	
+	game_over.pos.x = 0;
+	game_over.pos.y = 50;
+	game_over.txt = over;
+	
+	printTxt(&game_over);
+	
+	atualizaTela();
+	
+	while(!kbhit());
+	closegraph();
+	
 }
 

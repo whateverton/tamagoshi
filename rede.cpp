@@ -111,3 +111,8 @@ bool sendData(data_type &p)
 	//sendto (socket, message, length, flags, dest_address, dest_lenght)
 	return sendto(rede_socket,(char *)&p,sizeof(unsigned int)*2 + p.buff_size,0,(LPSOCKADDR)&remote_addr,sizeof(sockaddr));
 }
+
+
+void closeCon (){
+	 closesocket(rede_socket);
+}

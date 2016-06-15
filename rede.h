@@ -29,5 +29,6 @@ bool connectToServer();
 bool waitClient(void);
 bool getData(data_type &pack);
 bool sendData(data_type &p);
+void closeCon ();
 // ------------------------------------------------------------------
 #endif
