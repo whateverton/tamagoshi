@@ -43,27 +43,6 @@ void printImg(imagem_type *imagem){
 	putimage(imagem->pos.x, imagem->pos.y, imagem->img, mode);	
 }
 
-void desenhaTela(){
-	setfillstyle(9, GREEN); 							//Barra superior-superior
-	bar(0, 0, 430, 5);
-	setfillstyle(9, GREEN);								//Barra inferior-superior
-	bar(0, 45, 430, 50);
-	
-	//Logica para barras verticais da parte superior
-	int bar_left = 0;
-	int bar_top = 0;
-	int bar_right = 5;
-	int bar_bottom = 50;
-	
-	for(int b = 0; b < 6; b++){
-		
-	setfillstyle(9, GREEN);
-	bar(bar_left, bar_top, bar_right, bar_bottom);
-	
-	bar_left += 106;
-	bar_right += 106;
-	}
-}
 
 void importaImagem(imagem_type *imagem, const char* nome){
 	int tamanho = 0;

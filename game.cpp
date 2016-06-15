@@ -23,7 +23,7 @@ int pos_y = 30;								//Posicao inicial do ponto Y
 int main (){
 	char tcl;							 	//Provisorio enquanto nao ha um final de jogo definido
 	
-	initwindow(430, 600, "Tamagoshi");
+	initwindow(420, 600, "Tamagoshi");
 	cleardevice();
 	
 	initGame();
@@ -40,7 +40,6 @@ int main (){
 				
 				if (kbhit()) tcl = getch();		//Captura teclado
 				
-				desenhaTela();
 				if(!atualizaLogica(FPS) || (tcl == ESC)) g_state = GAME_OVER;
 				
 				break;

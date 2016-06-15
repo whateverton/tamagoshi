@@ -21,7 +21,7 @@
 #define PONTUACAO_POSY	55
 
 #define ALTURA_BOTAO 	50
-#define LARGURA_BOTAO	110
+#define LARGURA_BOTAO	105
 
 typedef enum{
 	 COME
@@ -68,35 +68,35 @@ typedef struct{
 }sprites;
 
 char *button_idle_img_path[] = {
-	 "./images/botao_idle.jpg"
-	,"./images/botao_idle.jpg"
-	,"./images/Button_Caga.jpg"
-	,"./images/Button_Banho.jpg"
+	 "./images/Button_come.bmp"
+	,"./images/Button_Dorme.bmp"
+	,"./images/Button_Caga.bmp"
+	,"./images/Button_Banho.bmp"
 };
 char *button_pressed_img_path[] = {
-	 "./images/botao_pressionado.jpg"
-	,"./images/botao_pressionado.jpg"
-	,"./images/Button_Caga_Pressed.jpg"
-	,"./images/Button_Banho_Pressed.jpg"
+	 "./images/Button_come_Pressed.bmp"
+	,"./images/Button_Dorme_Pressed.bmp"
+	,"./images/Button_Caga_Pressed.bmp"
+	,"./images/Button_Banho_Pressed.bmp"
 };
-char *button_mask = "./images/Mascaras/Mascara_Zeta_Button.png";
+char *button_mask = "./images/Mascaras/Mascara_Zeta_Button.bmp";
 
 char *sprites_img[] = {
-	 "./images/Monster_evo1_1.jpg"
-	,"./images/Monster_evo1_2.jpg"
-	,"./images/Monster_evo2_1.jpg"
-	,"./images/Monster_evo2_2.jpg"
-	,"./images/Monster_evo3_1.jpg"
-	,"./images/Monster_evo3_2.jpg"
+	 "./images/Monster_evo1_1.bmp"
+	,"./images/Monster_evo1_2.bmp"
+	,"./images/Monster_evo2_1.bmp"
+	,"./images/Monster_evo2_2.bmp"
+	,"./images/Monster_evo3_1.bmp"
+	,"./images/Monster_evo3_2.bmp"
 };
 
 char *sprites_mask[] = {
-	"./images/Mascaras/Mascara_evo1_1.jpg"
-	,"./images/Mascaras/Mascara_evo1_2.jpg"
-	,"./images/Mascaras/Mascara_evo2_1.jpg"
-	,"./images/Mascaras/Mascara_evo2_2.jpg"
-	,"./images/Mascaras/Mascara_evo3_1.jpg"
-	,"./images/Mascaras/Mascara_evo3_2.jpg"
+	"./images/Mascaras/Mascara_evo1_1.bmp"
+	,"./images/Mascaras/Mascara_evo1_2.bmp"
+	,"./images/Mascaras/Mascara_evo2_1.bmp"
+	,"./images/Mascaras/Mascara_evo2_2.bmp"
+	,"./images/Mascaras/Mascara_evo3_1.bmp"
+	,"./images/Mascaras/Mascara_evo3_2.bmp"
 };
 
 char *background_img = "./images/bckgd_game.bmp";
@@ -132,11 +132,11 @@ void initGame(){
 		necessidades[i].botao_pressionado.altura = ALTURA_BOTAO; // px
 		necessidades[i].botao_pressionado.largura = LARGURA_BOTAO; // px
 		
-		//importaImagem(&necessidades[i].botao_idle,button_idle_img_path[i]);
-		importaImagem(&necessidades[i].botao_idle,"./images/botao_idle.jpg");
+		importaImagem(&necessidades[i].botao_idle,button_idle_img_path[i]);
+		//importaImagem(&necessidades[i].botao_idle,"./images/botao_idle.bmp");
 		importaMascara(&necessidades[i].botao_idle,button_mask);
-		//importaImagem(&necessidades[i].botao_pressionado,button_pressed_img_path[i]);
-		importaImagem(&necessidades[i].botao_pressionado,"./images/botao_pressionado.jpg");
+		importaImagem(&necessidades[i].botao_pressionado,button_pressed_img_path[i]);
+		//importaImagem(&necessidades[i].botao_pressionado,"./images/botao_pressionado.bmp");
 		importaMascara(&necessidades[i].botao_pressionado,button_mask);
 		
 		necessidades[i].botao_atual = &necessidades[i].botao_idle;
@@ -195,7 +195,7 @@ bool decNecessidade (float dT, necessidades_type &n){
 }
 
 bool incrementoPontuacao(float dT){
-	pontuacao += (500.0 * dT);
+	pontuacao += (300.0 * dT);
 	if (pontuacao >= 100000.0)	
 		return false;
 	return true;
@@ -229,8 +229,8 @@ bool atualizaLogica(const float dT){
 	printImg(&background);
 	incrementoPontuacao(dT);
 	
-	if(pontuacao >= 1000.0){
-		if(pontuacao >= 5000.0) monster.evol = 2;
+	if(pontuacao >= 2000.0){
+		if(pontuacao >= 6000.0) monster.evol = 2;
 		else monster.evol = 1;
 	}
 	
