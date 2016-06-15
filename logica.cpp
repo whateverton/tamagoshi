@@ -5,6 +5,7 @@
 #include "rede.h"
 #include "logica.h"
 #include "desenha.h"
+#include "text_data.h"
 
 #define STATS_POSY		18
 
@@ -24,6 +25,8 @@
 
 #define ALTURA_BOTAO 	50
 #define LARGURA_BOTAO	105
+
+#define ESC		27
 
 using namespace std;
 
@@ -118,6 +121,7 @@ float brinca = 101.0;
 float caga = 101.0;
 float banho = 101.0;
 float pontuacao = 0.0;
+float pontuacao_outro = -0.1;
 float timeout = 0.0;
 
 int mouse_dx;
@@ -249,32 +253,10 @@ bool incrementoPontuacao(float dT){
 	
 }
 
-bool decrementoBrinca(float dT){
-	brinca -= (1.0 * dT);
-	if (brinca <= 0.0)	
-		return false;
-	return true;
-}
-
-bool decrementoCaga(float dT){
-	caga -= (1.0 * dT);
-	if (caga <= 0.0)	
-		return false;
-	return true;
-}
-
-bool decrementoBanho(float dT){
-	banho -= (1.0 * dT);
-	if (banho <= 0.0)	
-		return false;
-	return true;
-}
-
-
 bool atualizaLogica(const float dT){
 	
 	printImg(&background);
-	if(!incrementoPontuacao(dT)) return false;
+	if(!incrementoPontuacao(dT)) return encerraJogo(dT);
 		
 	if(pontuacao >= 2000.0){
 		if(pontuacao >= 6000.0) monster.evol = 2;
@@ -286,7 +268,7 @@ bool atualizaLogica(const float dT){
 	
 	for(int i = COME; i < MAX_NECESSIDADES; ++i){
 		if(!decNecessidade(dT,necessidades[i]))
-			return false;
+			return encerraJogo(dT);;
 	}
 	
 	
@@ -307,7 +289,11 @@ bool atualizaLogica(const float dT){
 	printNum(CAGA_POSX,			STATS_POSY,		necessidades[CAGA].valor);
 	printNum(BANHO_POSX,		STATS_POSY,		necessidades[BANHO].valor);
 	
-	return encerraJogo(dT);
+	timeout += dT;
+	if (timeout >= 128.0)
+		return encerraJogo(dT);
+	return true;
+	
 }
 void maxPoints()
 {
@@ -315,10 +301,61 @@ void maxPoints()
 }
 bool encerraJogo(float dT){
 	
-	timeout += dT;
-	if (timeout >= 128.0)
-		return false;
+	if(multiplayer){
+		data_type packed_to_send;
+		data_type packed_to_receive;
+
+		sprintf(packed_to_send.buff,"%d",pontuacao);
+		
+		packed_to_send.operation =  SCORE_UPDATE;
+		packed_to_send.buff_size = strlen(packed_to_send.buff) + 1;
+		
+		sendData(packed_to_send);
+		
+		cleardevice();
+		printTxt(&wait_display);
+		atualizaTela();
+		
+		while(1){
+			
+			if(getData(packed_to_receive)) break;
+			
+			char tcl;
+			if (kbhit()){
+				tcl = getch();
+				if(tcl == ESC) return false;
+			} 
+			
+		}
+		#define CHAR_SIZE	16
+		#define TXT_CENTER_X(length)	((420-(length*CHAR_SIZE))/2)
+		txt_type m_points;
+	
+		cleardevice();
+		m_points.pos.x = TXT_CENTER_X(strlen(packed_to_send.buff));
+		m_points.pos.y = 63;
+		m_points.txt = packed_to_send.buff;
+
+		printTxt(&my_score_display);
+		printTxt(&m_points);
+		
+		txt_type o_points;
+		o_points.pos.x = TXT_CENTER_X(strlen(packed_to_receive.buff));
+		o_points.pos.y = 93;
+		o_points.txt = packed_to_receive.buff;
+		
+		printTxt(&other_score_display);
+		printTxt(&o_points);
+		
+		atualizaTela();
+		
+		while(!kbhit());
+		getch();
+		
+	}
+	
 	return true;
+	
 }
 
 void swapRandomButtons (int index){

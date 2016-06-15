@@ -23,11 +23,17 @@ const char *members[4][3] = {
 };
 
 const char *multi_connection[2] = {"Conectando...","Connecting..."};
+const char *multi_wait[2] = {"Aguarde...", "Wait..."};
+const char *multi_your_score[2] = {"Seus Pontos: ", "Your Points: "};
+const char *multi_other_score[2] = {"Pontos do Outro: ", "Other Points: "};
 
 txt_type menu_options[5];
 txt_type settings_options[3];
 txt_type credits_display[13];
 txt_type connect_display;
+txt_type wait_display;
+txt_type my_score_display;
+txt_type other_score_display;
 
 lang_type current_lang;
 
@@ -98,4 +104,17 @@ void updateLanguage(lang_type lang)
 	connect_display.pos.x = TXT_CENTER_X(strlen(multi_connection[lang]));
 	connect_display.pos.y = 50;
 	connect_display.txt = multi_connection[lang];
+	
+	wait_display.pos.x = TXT_CENTER_X(strlen(multi_wait[lang]));
+	wait_display.pos.y = 50;
+	wait_display.txt = multi_wait[lang];
+	
+	my_score_display.pos.x = TXT_CENTER_X(strlen(multi_your_score[lang]));
+	my_score_display.pos.y = 50;
+	my_score_display.txt = multi_your_score[lang];
+	
+	other_score_display.pos.x = TXT_CENTER_X(strlen(multi_other_score[lang]));
+	other_score_display.pos.y = 80;
+	other_score_display.txt = multi_other_score[lang];
+	
 }
